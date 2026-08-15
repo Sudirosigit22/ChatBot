@@ -2,7 +2,7 @@
 
 Chatbot berbasis web yang terintegrasi dengan **Ollama Cloud** (atau instance Ollama lokal). Dibangun dengan **PHP murni** (tanpa framework berat), penyimpanan riwayat di **browser (localStorage)**, lapisan **agent** yang dapat diaudit, **classifier intent berbasis Machine Learning** (Naive Bayes terlatih), tool-calling nyata, streaming respons (SSE), serta dukungan lampiran dokumen dan vision.
 
-Proyek ini dirancang agar dapat dijalankan di shared hosting PHP sekaligus mendukung fitur lanjutan: multi-model, mode thinking/reasoning, kontrol kedalaman jawaban, kalkulator matematika presisi, analisis performa kendaraan RC, pencarian web, dan badge deteksi jenis pertanyaan di UI.
+Proyek ini dirancang agar dapat dijalankan di shared hosting PHP sekaligus mendukung fitur lanjutan: multi-model, mode thinking/reasoning, kontrol kedalaman jawaban, kalkulator matematika presisi, perhitungan teknis berantai, pencarian web, dan badge deteksi jenis pertanyaan di UI.
 
 ---
 
@@ -32,13 +32,13 @@ Proyek ini dirancang agar dapat dijalankan di shared hosting PHP sekaligus mendu
 
 ### Latar belakang
 
-Banyak chatbot LLM “sederhana” hanya meneruskan prompt ke API dan menampilkan teks. Untuk tugas yang membutuhkan **angka akurat** (rasio gigi, konversi satuan berantai, analisis performa RC), model sering menghitung manual dan menghasilkan kesalahan. Di sisi lain, menumpuk seluruh logika di prompt saja membuat sistem sulit diuji, diaudit, dan dikembangkan.
+Banyak chatbot LLM “sederhana” hanya meneruskan prompt ke API dan menampilkan teks. Untuk tugas yang membutuhkan **angka akurat** (rasio, konversi satuan berantai, perhitungan teknis bertahap), model sering menghitung manual dan menghasilkan kesalahan. Di sisi lain, menumpuk seluruh logika di prompt saja membuat sistem sulit diuji, diaudit, dan dikembangkan.
 
 Proyek ini lahir dari kebutuhan praktis:
 
 - Akses model cloud yang kuat (GPT-OSS, Nemotron, Gemma, dll.) **tanpa** harus mengelola GPU/server Ollama sendiri.
 - Deployment ringan di **shared hosting PHP** (InfinityFree, Hostinger, VPS kecil, atau bahkan `php -S` lokal).
-- Kebutuhan domain spesifik: perhitungan matematika presisi dan **analisis performa kendaraan Remote Control (RC)** — kecepatan, torsi, arus, gearing, volume motor, dll.
+- Kebutuhan perhitungan matematika presisi dan **analisis teknis berantai** — konversi satuan, rasio, rantai perhitungan multi-langkah, serta skenario numerik yang menuntut determinisme.
 - Keinginan membangun **agentic AI yang inspectable**: rencana langkah, validasi tool call, dan jejak eksekusi bisa diaudit, bukan kotak hitam.
 - Menjawab kritik akademis/evaluasi bahwa sistem sebelumnya kurang memiliki **kontribusi Machine Learning riil** (training model sendiri) dan **test otomatis**.
 
@@ -63,7 +63,7 @@ Fokus utama:
 
 - Akses mudah ke model cloud Ollama tanpa menjalankan binary Ollama di server sendiri.
 - Pengalaman chat modern: streaming, rendering kaya, riwayat di browser, ekspor Markdown/PDF, kontrol reasoning dan kedalaman jawaban.
-- Tool-calling nyata untuk matematika, rasio gigi, analisis performa RC, dan pencarian web.
+- Tool-calling nyata untuk matematika, rasio, perhitungan berantai, dan pencarian web.
 - Lapisan agent + classifier intent ML yang membuat keputusan tool lebih terstruktur dan dapat diaudit.
 - Siap shared hosting: hanya PHP + ekstensi standar + akses internet keluar.
 
@@ -79,7 +79,7 @@ Nama aplikasi, judul halaman, daftar model, dan parameter sampling dapat diubah 
 | **Multi-model** | Pilih model dari dropdown (GPT-OSS 120b/20b, Nemotron 3 Super, Gemma 4, dll.). Setiap model punya metadata: label, deskripsi, mode thinking, context window, dukungan tool/vision. |
 | **Mode Thinking / Reasoning** | low / medium / high, atau on/off (tergantung model). Level lebih tinggi = reasoning lebih dalam. |
 | **Kedalaman jawaban** | Hemat / Adaptif / Mendalam — mengontrol anggaran `num_predict` secara dinamis. |
-| **Tool-calling** | Kalkulator tunggal, batch, berantai; pencarian web; analisis performa RC. |
+| **Tool-calling** | Kalkulator tunggal, batch, berantai; pencarian web; perhitungan teknis terstruktur. |
 | **Klasifikasi intent (ML)** | Deteksi otomatis jenis pertanyaan (matematika / pencarian web / umum) dengan badge di UI. |
 | **Manajemen percakapan** | Buat, ganti nama, hapus, cari — disimpan di localStorage browser per perangkat. |
 | **Edit & Regenerate** | Edit pesan user sebelumnya atau regenerate jawaban terakhir. |
@@ -89,7 +89,7 @@ Nama aplikasi, judul halaman, daftar model, dan parameter sampling dapat diubah 
 | **Autentikasi sederhana** | Login username/password dari `secrets.php` / `config.php`. |
 | **Streaming SSE** | Respons token-per-token tanpa menunggu jawaban selesai. |
 
-**Kegunaan praktis:** asisten coding & penulisan, perhitungan matematis akurat (termasuk gearbox multi-stage), analisis performa RC, pencarian fakta terkini, dan chat pribadi dengan model cloud tanpa infrastruktur GPU lokal.
+**Kegunaan praktis:** asisten coding & penulisan, perhitungan matematis akurat (termasuk rantai perhitungan multi-langkah dan rasio), analisis teknis numerik, pencarian fakta terkini, dan chat pribadi dengan model cloud tanpa infrastruktur GPU lokal.
 
 ---
 
@@ -104,7 +104,7 @@ Nama aplikasi, judul halaman, daftar model, dan parameter sampling dapat diubah 
 7. **Test otomatis** — ~95 kasus uji untuk kalkulator, intent, dan agent layer.
 8. **Riwayat di client** — Tidak perlu SQLite/MySQL; data percakapan di localStorage.
 9. **Secrets terpisah** — API key & password di `secrets.php` (di-ignore git); dukungan multi-key.
-10. **Domain-specific tools** — Tool RC hanya diaktifkan saat query relevan.
+10. **Tool terstruktur** — Perhitungan batch/berantai dan tool domain diaktifkan secara selektif sesuai intent agar tidak mengganggu chat umum.
 11. **UI modern** — Sidebar, dark mode, Markdown + KaTeX + highlight.js, badge intent, lampiran file.
 12. **Vision (opsional)** — Upload gambar saat model Gemma 4 dipilih.
 
@@ -131,10 +131,10 @@ Nama aplikasi, judul halaman, daftar model, dan parameter sampling dapat diubah 
 
 ### Tools (Function Calling)
 - `hitung` — ekspresi matematika tunggal.
-- `hitung_batch` — banyak perhitungan independen (maks 40), termasuk rasio gigi.
+- `hitung_batch` — banyak perhitungan independen (maks 40), termasuk rasio.
 - `hitung_berantai` — rangkaian langkah saling bergantung (`hasil1`, `hasil2`, …).
 - `cari_web` — DuckDuckGo + Wikipedia.
-- `hitung_performansi_rc` — analisis performa kendaraan RC (di-gate oleh deteksi intent).
+- Tool perhitungan teknis tambahan (di-gate oleh deteksi intent bila relevan).
 
 ### Agent & ML
 - `includes/agent.php` — perencanaan, validasi tool call, pencatatan jejak.
@@ -159,7 +159,7 @@ ChatBot/
 ├── includes/
 │   ├── bootstrap.php             # Session, CSRF, resolusi model, streaming Ollama, tool loop
 │   ├── agent.php                 # Lapisan agent: classify, plan, validate, record, finish
-│   ├── tools.php                 # Skema tool + implementasi kalkulator, web search, RC
+│   ├── tools.php                 # Skema tool + implementasi kalkulator, web search, perhitungan teknis
 │   └── ml/
 │       ├── dataset_intent.csv    # Dataset berlabel (Bahasa Indonesia)
 │       ├── nb_core.php           # Algoritma Multinomial Naive Bayes
@@ -209,7 +209,7 @@ ChatBot/
 3. Preview klasifikasi intent dihitung; event SSE `meta` dikirim (conversation_id, model, response_depth, intent).
 4. `ollama_chat_stream()`:
    - History dibatasi (pesan/karakter).
-   - System prompt + tools disiapkan (tool RC hanya jika query relevan).
+   - System prompt + tools disiapkan (tool domain hanya jika query relevan).
    - `agent_start_run()` menyusun rencana (understand → calculate/research → verify).
    - Loop putaran tool (maks `tool_max_rounds`):
      - Stream request ke Ollama.
@@ -327,14 +327,14 @@ Tidak wajib: Composer, Node.js, SQLite, MySQL, atau ekstensi database.
 
 ### Kalkulator
 - **`hitung`**: ekspresi tunggal (`sqrt(2500)+ln(10)`, `2200*22.2`, dll.).
-- **`hitung_batch`**: banyak perhitungan independen (ideal untuk tabel perbandingan). Mendukung `gigi_input` / `gigi_output` untuk rasio gear (pinion = input, spur/diferensial = output).
-- **`hitung_berantai`**: langkah berurutan yang saling bergantung (`hasil1 * hasil2`). Berguna untuk gearbox multi-stage atau konversi satuan berlapis. Rangkaian berhenti jika satu langkah gagal.
+- **`hitung_batch`**: banyak perhitungan independen (ideal untuk tabel perbandingan). Mendukung field rasio khusus bila diperlukan (mis. pasangan input/output).
+- **`hitung_berantai`**: langkah berurutan yang saling bergantung (`hasil1 * hasil2`). Berguna untuk konversi satuan berlapis, perhitungan multi-tahap, atau skenario di mana hasil langkah sebelumnya dipakai di langkah berikutnya. Rangkaian berhenti jika satu langkah gagal.
 
 ### Web Search
 - **`cari_web`**: DuckDuckGo Instant Answer + Wikipedia. Aktif jika `web_search_enabled = true`.
 
-### Analisis Performa RC
-- **`hitung_performansi_rc`**: diaktifkan hanya jika pesan terdeteksi sebagai permintaan performa RC. Menghitung kecepatan, RPM, torsi, arus, gearing, volume motor, dll. berdasarkan parameter (meshes gigi, diameter roda, berat, mode high/low, kelas penggunaan, ESC, dll.).
+### Perhitungan teknis terstruktur
+- Tool tambahan untuk skenario numerik yang lebih kompleks (mis. rantai parameter teknis) dapat diaktifkan secara selektif bila intent terdeteksi relevan, agar tidak mengganggu percakapan umum.
 
 Semua tool dipanggil lewat format function-calling OpenAI-style yang didukung Ollama. Hasil dimasukkan kembali ke konteks agar model bisa melanjutkan reasoning.
 
@@ -344,7 +344,7 @@ Semua tool dipanggil lewat format function-calling OpenAI-style yang didukung Ol
 
 ### Agent layer (`includes/agent.php`)
 - **`agent_classify()`** — hybrid ML + regex → `needs_math`, `needs_web`.
-- **`agent_start_run()`** — menyusun rencana langkah (understand → calculate/calculate_rc/research → verify).
+- **`agent_start_run()`** — menyusun rencana langkah (understand → calculate/research → verify).
 - **`agent_validate_tool_call()`** — menolak tool di luar rencana atau argumen kosong/salah bentuk.
 - **`agent_record_tool_call()`** — mencatat status, durasi, hash hasil.
 - **`agent_finish_run()`** — verdict `passed` / `needs_review` berdasarkan keberhasilan tool dan kelengkapan rencana.
@@ -388,10 +388,10 @@ Menjalankan secara berurutan:
 | File | Cakupan |
 |------|---------|
 | `AgentLayerTest.php` | Perencanaan, validasi, jejak agent |
-| `CalculatorTest.php` | ~40 kasus: nol, magnitude ekstrem, NaN, faktorial, batch, berantai, rasio gigi, regresi bug format |
+| `CalculatorTest.php` | ~40 kasus: nol, magnitude ekstrem, NaN, faktorial, batch, berantai, rasio, regresi bug format |
 | `IntentClassifierTest.php` | Load model, akurasi minimal, spot-check kelas, hybrid `agent_classify` |
 
-Total sekitar **95 kasus uji**. Beberapa bug nyata di formatter kalkulator dan deteksi rantai rasio gigi ditemukan dan diperbaiki berkat suite ini (lihat `CHANGELOG_REVISI.md`).
+Total sekitar **95 kasus uji**. Beberapa bug nyata di formatter kalkulator dan deteksi pola rasio berantai ditemukan dan diperbaiki berkat suite ini (lihat `CHANGELOG_REVISI.md`).
 
 ---
 
@@ -448,7 +448,7 @@ Set `X-Accel-Buffering: no` (sudah dikirim) dan nonaktifkan buffering di nginx/C
 - **Context window**: per-model `num_ctx` (dynamic min/max); nilai global hanya fallback.
 - **Temperature default 0** + seed tetap → jawaban lebih deterministik (baik untuk perhitungan).
 - **History truncation**: hanya N pesan / M karakter terakhir yang dikirim ke model; UI tetap menampilkan seluruh riwayat di client.
-- **RC tool gating**: deteksi berbasis pola kata kunci + intent agar tool domain-specific tidak mengganggu chat umum.
+- **Tool gating**: deteksi berbasis pola kata kunci + intent agar tool domain tidak mengganggu chat umum.
 - **Sanitasi**: setelah streaming, jawaban dibersihkan dari pola tilde tunggal dan karakter pengganti sebelum ditampilkan/disimpan di client.
 - **Response depth**: profil `hemat` / `adaptive` / `mendalam` mengatur anggaran `num_predict` berdasarkan kompleksitas pertanyaan dan metadata model.
 - **Vision**: hanya model dengan `supports_vision` (Gemma 4); frontend menolak upload gambar jika model tidak mendukung.
