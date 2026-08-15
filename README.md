@@ -163,7 +163,7 @@ ChatBot/
 │   └── ml/
 │       ├── dataset_intent.csv    # Dataset berlabel (Bahasa Indonesia)
 │       ├── nb_core.php           # Algoritma Multinomial Naive Bayes
-│       ├── train_intent_classifier.php  # CLI pelatihan (jangan di-load web)
+│       ├── train_intent_classifier.php  # CLI pelatihan
 │       ├── intent_classifier.php # Inferensi runtime
 │       ├── intent_model.json     # Model hasil training
 │       └── training_report.md    # Laporan akurasi + confusion matrix
@@ -172,8 +172,8 @@ ChatBot/
 │   ├── IntentClassifierTest.php  # Model + hybrid agent_classify
 │   ├── AgentLayerTest.php
 │   └── run_tests.php             # Runner seluruh suite (~95 kasus)
-├── config.php                    # Konfigurasi aplikasi (boleh di-commit; tanpa secret)
-├── secrets.php                   # API key(s), username/password (JANGAN di-commit)
+├── config.php                    # Konfigurasi aplikasi (
+├── secrets.php                   # API key(s), username/passwor
 ├── index.php                     # Halaman chat (butuh login)
 ├── login.php
 ├── logout.php
